@@ -12,7 +12,6 @@ from model import Model
 from torchvision import transforms
 from Parser import parser
 from PIL import Image
-from new_filter import filter
 from filter import filterImage
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -143,8 +142,7 @@ class recognition:
     def recognition(self, im):
         confidence_score = 0
 
-        # img = filterImage(im)
-        img = filter(im)
+        img = filterImage(im)
         transform = transforms.Compose(
             [transforms.ToTensor()]
             # [transforms.CenterCrop([32, 100]), transforms.ToTensor()]

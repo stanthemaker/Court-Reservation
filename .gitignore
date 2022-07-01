@@ -1,7 +1,8 @@
 *.pth
 myOrder.json
 log.txt
-./Screenshots
+screenshots/
+myConfig.ini
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -132,7 +133,6 @@ venv.bak/
 .dmypy.json
 dmypy.json
 
-.ini/
 # Pyre type checker
 .pyre/
 
