@@ -1,0 +1,19 @@
+beautifulsoup4
+lmdb
+matplotlib
+natsort
+numpy
+opencv_python
+pandas
+Pillow
+requests
+schedule
+six
+gdown
+lxml
+torch
+torchvision
+# if you run with cuda, comment the above 2 lines and uncomment the following 2 lines
+# torch==1.10.0+cu113
+# torchvision==0.11.1+cu113
+
