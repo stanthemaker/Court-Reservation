@@ -3,12 +3,12 @@ import time
 from PIL import Image
 import io
 import schedule
+import json
 import requests, sys, getpass, shutil, json, time
 import pandas as pd
 from bs4 import BeautifulSoup
 from datetime import date, datetime
 import requests
-
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
 from webdriver_manager.chrome import ChromeDriverManager
@@ -17,7 +17,6 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import recognition as recog
-import configparser
 login_url = "https://sports.tms.gov.tw/member/?U=login"
 valid_img_path = "./validation.png"
 browserIsOpen = True
@@ -64,10 +63,10 @@ def log(to_print, verbose=True):
         print("[%s] : %s" % (timestamp, to_print))
 
 def get_credentials():
-        config = configparser.ConfigParser()
-        config.read('my_config.ini')
-        username = config.get('Stan', 'username')
-        password = config.get('Stan', 'password')
+        f = open('my_config.json')
+        data = json.load(f)
+        username = data["account"]["username"]
+        password = data["account"]["password"]
         return username , password
 
 class Court_Reservation:
@@ -95,7 +94,7 @@ class Court_Reservation:
         validation_code = ""
         im = self.get_validation_img()
         validation_code, confidence = self.rec.recognition(im) 
-        while confidence < 0.8 or (any(c.isalpha() for c in validation_code)):
+        while confidence < 0.7 or (any(c.isalpha() for c in validation_code)):
             self.renew_validation_img()
             im = self.get_validation_img()
             #type: string, tensor
@@ -122,7 +121,11 @@ class Court_Reservation:
         self.get_validation_code()
         self.driver.find_element(By.ID, "UserInputNo").send_keys(self.validation_code)
         self.driver.find_element(By.CSS_SELECTOR, "#Form > div.MemberBtn > button:nth-child(1)").click()
-
+        alert = self.driver.switch_to.alert
+        alert.accept()
+    def reserve(self):
+        self.driver.get("https://sports.tms.gov.tw/venues/?K=472")
+        #TODO:
 
 
 if __name__ == "__main__":

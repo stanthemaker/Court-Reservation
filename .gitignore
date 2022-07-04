@@ -3,6 +3,7 @@ myOrder.json
 log.txt
 *.ini
 *.png
+my_config.json
 screenshot.zip
 # Byte-compiled / optimized / DLL files
 __pycache__/
