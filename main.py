@@ -89,7 +89,7 @@ class Court_Reservation:
         self.rec = recog.recognition()
         self.session = requests.Session()
         self.validation_code = 0
-    def get_confirmation_code(self):
+    def get_validation_code(self):
         confidence = 0
         validation_code = ""
         im = self.get_validation_img()
@@ -118,7 +118,7 @@ class Court_Reservation:
         self.driver.get(login_url)
         self.driver.find_element(By.ID, "USERNAME").send_keys(self.username)
         self.driver.find_element(By.ID, "PASSWORD").send_keys(self.password)
-        self.get_confirmation_code()
+        self.get_validation_code()
         self.driver.find_element(By.ID, "UserInputNo").send_keys(self.validation_code)
         self.driver.find_element(By.CSS_SELECTOR, "#Form > div.MemberBtn > button:nth-child(1)").click()
 

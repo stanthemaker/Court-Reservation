@@ -1,8 +1,9 @@
 *.pth
 myOrder.json
 log.txt
-screenshots/
-myConfig.ini
+*.ini
+*.png
+screenshot.zip
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
