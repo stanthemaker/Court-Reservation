@@ -90,15 +90,9 @@ class Court_Reservation:
         self.session = requests.Session()
         self.validation_code = 0
     def get_validation_code(self):
-        confidence = 0
         validation_code = ""
         im = self.get_validation_img()
-        validation_code, confidence = self.rec.recognition(im) 
-        while confidence < 0.7 or (any(c.isalpha() for c in validation_code)):
-            self.renew_validation_img()
-            im = self.get_validation_img()
-            #type: string, tensor
-            validation_code, confidence = self.rec.recognition(im) 
+        validation_code = self.rec.recognition(im) 
         self.validation_code = validation_code
 
     def get_validation_img(self):
