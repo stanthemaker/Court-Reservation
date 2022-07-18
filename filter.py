@@ -12,8 +12,8 @@ def filterImage(img): #type img = PIL.image
     cv_img[:, :, 0] *= mask
     cv_img[:, :, 1] *= mask
     cv_img[:, :, 2] *= mask
-    PIL_img = Image.fromarray(cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB))
-    return PIL_img
+    filtered_img = Image.fromarray(cv2.cvtColor(cv_img, cv2.COLOR_BGR2RGB))
+    return filtered_img
     # save_path = os.path.join("processed", file)
     # cv2.imwrite(save_path, cv_img)
 

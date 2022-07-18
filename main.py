@@ -90,15 +90,9 @@ class Court_Reservation:
         self.session = requests.Session()
         self.validation_code = 0
     def get_validation_code(self):
-        confidence = 0
         validation_code = ""
         im = self.get_validation_img()
-        validation_code, confidence = self.rec.recognition(im) 
-        while confidence < 0.7 or (any(c.isalpha() for c in validation_code)):
-            self.renew_validation_img()
-            im = self.get_validation_img()
-            #type: string, tensor
-            validation_code, confidence = self.rec.recognition(im) 
+        validation_code = self.rec.recognition(im) 
         self.validation_code = validation_code
 
     def get_validation_img(self):
@@ -121,8 +115,11 @@ class Court_Reservation:
         self.get_validation_code()
         self.driver.find_element(By.ID, "UserInputNo").send_keys(self.validation_code)
         self.driver.find_element(By.CSS_SELECTOR, "#Form > div.MemberBtn > button:nth-child(1)").click()
-        alert = self.driver.switch_to.alert
-        alert.accept()
+        while ("驗證碼不正確，請重新輸入" in self.driver.switch_to_alert().text()):
+            self.get_validation_code()
+            self.driver.find_element(By.ID, "UserInputNo").send_keys(self.validation_code)
+            self.driver.find_element(By.CSS_SELECTOR, "#Form > div.MemberBtn > button:nth-child(1)").click()
+        self.driver.switch_to.alert.accept()
     def reserve(self):
         self.driver.get("https://sports.tms.gov.tw/venues/?K=472")
         #TODO:

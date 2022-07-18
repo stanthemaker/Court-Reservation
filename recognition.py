@@ -1,7 +1,7 @@
 import parser
 import string
 import argparse
-
+import pytesseract
 import torch
 import torch.backends.cudnn as cudnn
 import torch.utils.data
@@ -143,6 +143,9 @@ class recognition:
         confidence_score = 0
 
         img = filterImage(im)
+        number = pytesseract.image_to_string(img)
+        return number
+        
         transform = transforms.Compose(
             [transforms.ToTensor()]
             # [transforms.CenterCrop([32, 100]), transforms.ToTensor()]
