@@ -11,6 +11,7 @@ from datetime import date, datetime
 import requests
 from selenium import webdriver
 from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.alert import Alert
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
@@ -92,7 +93,8 @@ class Court_Reservation:
     def get_validation_code(self):
         validation_code = ""
         im = self.get_validation_img()
-        validation_code = self.rec.recognition(im) 
+        validation_code = self.rec.recognition(im)
+        # print("validation＿code", validation_code)
         self.validation_code = validation_code
 
     def get_validation_img(self):
@@ -115,10 +117,14 @@ class Court_Reservation:
         self.get_validation_code()
         self.driver.find_element(By.ID, "UserInputNo").send_keys(self.validation_code)
         self.driver.find_element(By.CSS_SELECTOR, "#Form > div.MemberBtn > button:nth-child(1)").click()
-        while ("驗證碼不正確，請重新輸入" in self.driver.switch_to_alert().text()):
+        while ("驗證碼不正確，請重新輸入" in self.driver.switch_to.alert.text):
+            self.driver.switch_to.alert.accept()
+            self.driver.get(login_url)
+            self.driver.find_element(By.ID, "USERNAME").send_keys(self.username)
+            self.driver.find_element(By.ID, "PASSWORD").send_keys(self.password)
             self.get_validation_code()
             self.driver.find_element(By.ID, "UserInputNo").send_keys(self.validation_code)
-            self.driver.find_element(By.CSS_SELECTOR, "#Form > div.MemberBtn > button:nth-child(1)").click()
+            # self.driver.find_element(By.CSS_SELECTOR, "#Form > div.MemberBtn > button:nth-child(1)").click()
         self.driver.switch_to.alert.accept()
     def reserve(self):
         self.driver.get("https://sports.tms.gov.tw/venues/?K=472")
