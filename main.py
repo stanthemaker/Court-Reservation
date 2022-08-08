@@ -19,6 +19,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import recognition as recog
+from datetime import date, timedelta    # for time
 login_url = "https://sports.tms.gov.tw/member/?U=login"
 valid_img_path = "./validation.png"
 browserIsOpen = True
@@ -82,9 +83,12 @@ class Court_Reservation:
         self.authenticated = False
         self.retry_interval = 0.5
         self.Court_num = 3 # 第幾面球場
-        self.date_str = str()
-        self.start_time = str()
-        self.end_time = str()
+        self.sdate = date(2022, 9, 1)   # start date
+        self.edate = date(2022, 10, 31)   # end date
+        self.weekdays = [0, 3]  # 練球日：[Monday, Thursday]
+        self.date = []
+        self.start_time = 8 # 開始練球時間（ 24小時制
+        self.end_time = 11  # 結束練球時間（ start_time ~ end_time )
         self.place_seq = str()
         self.num = str()        
         self.time_str = str()
@@ -132,23 +136,49 @@ class Court_Reservation:
         self.driver.switch_to.alert.accept()
 
     def reserve(self):
-        self.driver.get("https://sports.tms.gov.tw/order/?K=472")
-        #TODO:
-        select = Select(self.driver.find_element("name", 'EventType'))
-        select.select_by_index(1)
-        select = Select(self.driver.find_element("name", 'GovernmentType'))
-        select.select_by_index(4)
-        # month = input("Which month do you want to reserve (Ex: 2022-08) ? ")
-        month = "2022-09"
-        select = Select(self.driver.find_element("name", 'TimePeriodSelect'))
-        select.select_by_visible_text(month)
-        if self.Court_num == 3:
-            self.driver.find_element(By.ID, "SubVenues_651").click()
+        year = self.sdate.year
+        for months in range(self.sdate.month, self.edate.month+1) :
+            self.driver.get("https://sports.tms.gov.tw/order/?K=472")
+            select = Select(self.driver.find_element("name", 'EventType'))
+            select.select_by_index(1)
+            select = Select(self.driver.find_element("name", 'GovernmentType'))
+            select.select_by_index(5)
 
+
+            month = "%4d-%02d" % (year, months)
+            select = Select(self.driver.find_element("name", 'TimePeriodSelect'))
+            select.select_by_visible_text(month)
+            if self.Court_num == 3: # 第三面球場
+                self.driver.find_element(By.ID, "SubVenues_651").click()
+            time.sleep(1) # needed
+
+
+            while self.sdate < self.edate and self.sdate.month==months:
+                if self.sdate.weekday() not in self.weekdays:  # not thursday or monday
+                    self.sdate += timedelta(days=1)
+                    continue
+                for hours in range(self.start_time, self.end_time):
+                    Book = self.driver.find_element(By.ID, "DataPickup.%4d.%d.%02d.%02d.1" % (year,self.sdate.month,self.sdate.day,hours)).find_element(By.TAG_NAME, "div")
+                    # self.driver.execute_script("arguments[0].setAttribute('class', 'BookB UnBooked Booking')", Book)
+                    Book.click()
+                self.sdate += timedelta(days=1)
+
+            self.driver.find_element(By.ID, "EventName").send_keys("台大電機系籃練球")
+            self.driver.find_element(By.ID, "EventDescription").send_keys("籃球隊練球")
+            select = Select(self.driver.find_element("name", 'EventSportType'))
+            select.select_by_index(5) # 籃球
+            self.driver.find_element(By.ID, "EventParticipantsNumber").send_keys("20")
+            self.driver.find_element(By.NAME, "BackVenue").click()
+            self.driver.find_element(By.NAME, "Send").click()
+            self.driver.find_element(By.NAME, "Agree").click()
+            self.driver.find_element(By.NAME, "SendConfirm").click()
+            self.driver.find_element(By.NAME, "Send").click()
+            self.driver.find_element(By.NAME, "End").click()
+        
 
 if __name__ == "__main__":
     court_reservation = Court_Reservation()
-    court_reservation.login()
+    court_reservation.login()、
     court_reservation.reserve()
 
 # initialize the Chrome driver
