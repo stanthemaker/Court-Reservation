@@ -178,7 +178,7 @@ class Court_Reservation:
 
 if __name__ == "__main__":
     court_reservation = Court_Reservation()
-    court_reservation.login()、
+    court_reservation.login()
     court_reservation.reserve()
 
 # initialize the Chrome driver
