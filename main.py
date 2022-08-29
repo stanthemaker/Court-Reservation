@@ -18,7 +18,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-import recognition as recog
+from recognition import recognition
 from datetime import date, timedelta    # for time
 login_url = "https://sports.tms.gov.tw/member/?U=login"
 valid_img_path = "./validation.png"
@@ -89,17 +89,11 @@ class Court_Reservation:
         self.date = []
         self.start_time = 8 # 開始練球時間（ 24小時制
         self.end_time = 11  # 結束練球時間（ start_time ~ end_time )
-        self.place_seq = str()
-        self.num = str()        
-        self.time_str = str()
-        self.data = dict()
-        self.rec = recog.recognition()
-        self.session = requests.Session()
         self.validation_code = 0
     def get_validation_code(self):
         validation_code = ""
         im = self.get_validation_img()
-        validation_code = self.rec.recognition(im)
+        validation_code = recognition(im)
         # print("validation＿code", validation_code)
         self.validation_code = validation_code
 

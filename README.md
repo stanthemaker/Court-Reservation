@@ -27,15 +27,6 @@ $ pip3 install pytesseract
 $ pip3 install -r requirements.txt
 ```
 
-## Download Model
-
-```bash
-$ python3 downloadModel.py
-```
-
-- If the script does not work, go to the following link, download the file and put it under the current directory
-- https://drive.google.com/file/d/1MtzZ9HDfaa9205bhz7yWBQVZaAZuVvwb/view
-
 ## How to run
 
 ```bash
