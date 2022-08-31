@@ -19,7 +19,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import recognition as recog
-from datetime import date, timedelta    # for time
+from datetime import date, timedelta, datetime    # for time
 login_url = "https://sports.tms.gov.tw/member/?U=login"
 valid_img_path = "./validation.png"
 browserIsOpen = True
@@ -72,6 +72,11 @@ def get_credentials():
         password = data["account"]["password"]
         return username , password
 
+def get_reservation_details():
+    f = open('reservation.json')
+    data = json.load(f)
+    return data["court_num"], data["time"]["start_date"], data["time"]["end_date"], data["time"]["weekday_1"], data["time"]["weekday_2"], data["time"]["start_time"], data["time"]["end_time"]
+
 class Court_Reservation:
     def __init__(self):
         self.password = str()
@@ -82,13 +87,13 @@ class Court_Reservation:
         self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()),options=op)
         self.authenticated = False
         self.retry_interval = 0.5
-        self.Court_num = 3 # 第幾面球場
-        self.sdate = date(2022, 9, 1)   # start date
-        self.edate = date(2022, 10, 31)   # end date
-        self.weekdays = [0, 3]  # 練球日：[Monday, Thursday]
+        self.Court_num = int() # 第幾面球場
+        self.sdate = int()   # start date
+        self.edate = int()   # end date
+        self.weekdays = []  # 練球日：[Monday, Thursday]
         self.date = []
-        self.start_time = 8 # 開始練球時間（ 24小時制
-        self.end_time = 11  # 結束練球時間（ start_time ~ end_time )
+        self.start_time = int() # 開始練球時間（ 24小時制
+        self.end_time = int()  # 結束練球時間（ start_time ~ end_time )
         self.place_seq = str()
         self.num = str()        
         self.time_str = str()
@@ -96,6 +101,7 @@ class Court_Reservation:
         self.rec = recog.recognition()
         self.session = requests.Session()
         self.validation_code = 0
+
     def get_validation_code(self):
         validation_code = ""
         im = self.get_validation_img()
@@ -117,6 +123,10 @@ class Court_Reservation:
 
     def login(self):
         self.username, self.password = get_credentials()
+        self.Court_num, self.sdate, self.edate, weekday_1, weekday_2, self.start_time, self.end_time = get_reservation_details()
+        self.sdate = datetime.strptime(self.sdate, '%Y/%m/%d')
+        self.edate = datetime.strptime(self.edate, '%Y/%m/%d')
+        self.weekdays = [weekday_1-1, weekday_2-1]
         self.driver.get(login_url)
         self.driver.find_element(By.ID, "USERNAME").send_keys(self.username)
         self.driver.find_element(By.ID, "PASSWORD").send_keys(self.password)

@@ -1,0 +1,13 @@
+{
+    "court_num": 3 ,
+
+    "time" :{
+        "start_date": "2022/09/01",
+        "end_date": "2022/10/31",
+        "weekday_1": 1,
+        "weekday_2": 4,
+        "start_time": 8,
+        "end_time": 11
+    }
+
+}
