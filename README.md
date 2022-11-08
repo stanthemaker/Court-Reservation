@@ -4,7 +4,7 @@
 
 This project is designed to automate court reservation with this website: https://sports.tms.gov.tw/
 
-Since selenium is used and therefore GUI is needed, it is suggested not to develop under.
+Since selenium is used and therefore GUI is needed, it is suggested not to develop under WSL.
 
 ## Install Homebrew on Linux:
 
